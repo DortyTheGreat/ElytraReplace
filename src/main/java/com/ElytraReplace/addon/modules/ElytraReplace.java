@@ -24,6 +24,9 @@ import meteordevelopment.meteorclient.utils.player.InvUtils;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.component.DataComponentTypes;
 import meteordevelopment.meteorclient.utils.player.FindItemResult;
+import net.minecraft.text.Text;
+import net.minecraft.text.MutableText;
+import net.minecraft.network.packet.s2c.common.DisconnectS2CPacket;
 
 public class ElytraReplace extends Module {
 	
@@ -38,6 +41,13 @@ public class ElytraReplace extends Module {
         .build()
     );
 	
+	private final Setting<Boolean> logOut = sgGeneral.add(new BoolSetting.Builder()
+            .name("log-out")
+            .description("Disconnect from the server upon having no elytras to be replaced")
+            .defaultValue(false)
+            .build()
+    );
+	
     public ElytraReplace(Category cat) {
         super(cat, "elytra-replace", "Automatically replaces your elytra when its broken and continues flying.");
     }
@@ -50,7 +60,26 @@ public class ElytraReplace extends Module {
 		ItemStack chest = mc.player.getEquippedStack(EquipmentSlot.CHEST);
 		if (chest.isOf(Items.ELYTRA) && chest.getMaxDamage() - chest.getDamage() <= replaceDurability.get()) {
 			FindItemResult elytra = InvUtils.find(stack -> stack.getMaxDamage() - stack.getDamage() > replaceDurability.get() && stack.getItem() == Items.ELYTRA);
-			InvUtils.move().from(elytra.slot()).toArmor(2);
+			if (elytra.found()){
+				InvUtils.move().from(elytra.slot()).toArmor(2);
+				return;
+			}
+			
+			if (logOut.get()){
+				disconnect("You ran out of elytras.");
+			}
 		}
 	}
+	
+	
+	private void disconnect(String reason) {
+        disconnect(Text.literal(reason));
+    }
+
+    private void disconnect(Text reason) {
+        MutableText text = Text.literal("[AutoLog] ");
+        text.append(reason);
+
+        mc.player.networkHandler.onDisconnect(new DisconnectS2CPacket(text));
+    }
 }
