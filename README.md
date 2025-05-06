@@ -19,5 +19,3 @@ Tested successfully with these mods, but other might work as well
 ## Spaghetti
 
 Meteor Client actually has ElytraReplace functionality, although it is limited to ElytraFly only. Which is a bit weird.
-
-To-do: add log option if elytra wasn't found
