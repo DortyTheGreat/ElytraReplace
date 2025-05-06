@@ -16,8 +16,6 @@ Tested successfully with these mods, but other might work as well
 
 - Turn on the module, ensure that replace durability is high enough such that old elytra can be replaced mid-air
 
-https://github.com/user-attachments/assets/5d6fbca6-75aa-4284-813b-635c5db9534f
-
 ## Spaghetti
 
 Meteor Client actually has ElytraReplace functionality, although it is limited to ElytraFly only. Which is a bit weird.
